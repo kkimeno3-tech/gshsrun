@@ -18,30 +18,53 @@
     --muted:  #666;
     --lab-bg:   #E1F5EE; --lab-tx:   #085041;
     --staff-bg: #E6F1FB; --staff-tx: #0C447C;
-    --all-bg:   #EEEDFE; --all-tx:   #3C3489;
+    --cls-bg:   #EEEDFE; --cls-tx:   #3C3489;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
   .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
+  /* 헤더 */
   .header { margin-bottom: 1.75rem; }
   .header-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
   h1 { font-size: 20px; font-weight: 600; }
   .date-badge { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: white; border: 1px solid var(--border); color: var(--muted); }
   .sub { font-size: 13px; color: var(--muted); }
 
+  /* 섹션 */
   .section { margin-bottom: 1.75rem; }
   .sec-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .sec-title { font-size: 15px; font-weight: 600; }
   .tag { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; }
+  .tag-cls   { background: var(--cls-bg);   color: var(--cls-tx); }
   .tag-lab   { background: var(--lab-bg);   color: var(--lab-tx); }
   .tag-staff { background: var(--staff-bg); color: var(--staff-tx); }
-  .tag-all   { background: var(--all-bg);   color: var(--all-tx); }
 
-  .hl { padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
-  .hl-lab   { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
-  .hl-staff { background: var(--staff-bg); border: 1px solid #85B7EB; color: #042C53; }
+  /* 학급 순위 카드 */
+  .class-grid { display: flex; flex-direction: column; gap: 6px; }
+  .class-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 16px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .class-row.r1 { border-left: 3px solid var(--gold);   border-radius: 0 8px 8px 0; }
+  .class-row.r2 { border-left: 3px solid var(--silver); border-radius: 0 8px 8px 0; }
+  .class-row.r3 { border-left: 3px solid var(--bronze); border-radius: 0 8px 8px 0; }
+  .class-rank { font-size: 13px; font-weight: 600; min-width: 22px; color: var(--muted); }
+  .class-rank.g { color: var(--gold); }
+  .class-rank.s { color: var(--silver); }
+  .class-rank.b { color: var(--bronze); }
+  .class-name { font-size: 15px; font-weight: 600; min-width: 58px; }
+  .class-info { flex: 1; }
+  .class-members { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .bar-wrap { background: #eee; border-radius: 3px; height: 5px; }
+  .bar-fill { height: 5px; border-radius: 3px; background: #7F77DD; }
+  .class-dist { text-align: right; flex-shrink: 0; }
+  .class-dist .val { font-size: 16px; font-weight: 600; }
+  .class-dist .unit { font-size: 11px; color: var(--muted); }
+  .class-dist .avg { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
+  /* 러너 카드 */
   .runner-list { display: flex; flex-direction: column; gap: 6px; }
   .runner-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
   .runner-row.r1 { border-left: 3px solid var(--gold);   border-radius: 0 8px 8px 0; }
@@ -54,8 +77,8 @@
   .runner-info { flex: 1; min-width: 0; }
   .runner-name { font-size: 14px; font-weight: 600; }
   .runner-nick { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .bar-wrap { margin-top: 5px; background: #eee; border-radius: 3px; height: 4px; }
-  .bar-fill { height: 4px; border-radius: 3px; }
+  .r-bar-wrap { margin-top: 5px; background: #eee; border-radius: 3px; height: 4px; }
+  .r-bar-fill { height: 4px; border-radius: 3px; }
   .runner-right { text-align: right; flex-shrink: 0; }
   .dist-val { font-size: 15px; font-weight: 600; }
   .dist-unit { font-size: 11px; color: var(--muted); }
@@ -64,17 +87,22 @@
   .pct-mid  { background: var(--staff-bg); color: #185FA5; }
   .pct-low  { background: #f0f0ee; color: var(--muted); }
 
+  /* 하이라이트 */
+  .hl { padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+  .hl-lab   { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
+  .hl-staff { background: var(--staff-bg); border: 1px solid #85B7EB; color: #042C53; }
+
+  /* 전체 순위 */
   .toggle-btn { margin-left: auto; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
   .search-wrap { margin-bottom: 10px; }
   .search-wrap input { width: 100%; padding: 8px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none; }
-  .search-wrap input:focus { border-color: var(--teal); }
   .count-note { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .full-list { display: flex; flex-direction: column; gap: 3px; }
   .full-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: 13px; }
   .full-row:hover { background: var(--bg); }
   .f-rank  { min-width: 22px; color: var(--muted); font-size: 12px; }
   .f-name  { min-width: 75px; font-weight: 500; }
-  .f-group { min-width: 48px; font-size: 11px; color: var(--muted); }
+  .f-group { min-width: 52px; font-size: 11px; color: var(--muted); }
   .f-bar   { flex: 1; background: #eee; border-radius: 3px; height: 4px; }
   .f-dist  { min-width: 58px; text-align: right; font-weight: 600; }
   .f-pct   { min-width: 36px; text-align: right; font-size: 11px; color: var(--muted); }
@@ -83,15 +111,19 @@
   .tab  { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
   .tab.on { background: var(--text); color: white; border-color: var(--text); }
 
+  /* 구분선 */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0; }
+
   .footer-msg { margin-top: 2rem; padding: 16px; border-radius: 10px; background: white; border: 1px solid var(--border); text-align: center; font-size: 14px; color: var(--muted); line-height: 1.9; }
   .footer-msg strong { color: var(--text); }
 
   .loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
   .error   { text-align: center; padding: 2rem; color: #c0392b; font-size: 14px; line-height: 1.8; }
+
   @media (max-width: 480px) {
-    .runner-name { font-size: 13px; }
-    .dist-val    { font-size: 14px; }
-    .f-group     { display: none; }
+    .class-name { min-width: 46px; font-size: 14px; }
+    .dist-val   { font-size: 14px; }
+    .f-group    { display: none; }
   }
 </style>
 </head>
@@ -102,16 +134,15 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSp1YvkLLSO2V3AD_13rH0hRWc7NUkMUhogxIimvvmrjy5kYNgk_3UtKCaTWO32S2bnqO4_W3vA6MO_/pub?output=csv";
 
-let allRunners = [];
-let showFull   = false;
-let activeTab  = "전체";
+let allRunners  = [];
+let classRanks  = [];
+let showFull    = false;
+let activeTab   = "전체";
 
-/* CSV 파싱 (따옴표 포함 처리) */
 function parseCSV(text) {
   const lines = text.replace(/\r/g, "").split("\n");
   return lines.map(line => {
-    const cols = [];
-    let cur = "", inQ = false;
+    const cols = []; let cur = "", inQ = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') { inQ = !inQ; }
@@ -123,37 +154,44 @@ function parseCSV(text) {
   });
 }
 
+function isClass(group) {
+  return /^\d{2}-\d{2}$/.test(group);
+}
+
 async function init() {
   try {
-    const res = await fetch(CSV_URL);
+    const res  = await fetch(CSV_URL);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const text = await res.text();
     const rows = parseCSV(text);
 
-    // 헤더 행 건너뛰고 데이터 파싱
-    // 컬럼: 이름(0) 유저코드(1) 닉네임(2) 휴대폰(3) 소속(4) 운동횟수(5)
-    //        누적거리(6) 시간(7) 걸음(8) 달성률(9) 완료일(10)
     const result = [];
     for (let i = 1; i < rows.length; i++) {
       const r = rows[i];
       if (!r[0] || r[0] === "") continue;
-
-      const pctRaw = r[9] ? r[9].replace("%", "").trim() : "0";
-      const pct    = parseInt(pctRaw) || 0;
-      const dist   = parseFloat(r[6]) || 0;
-      const count  = parseInt(r[5])   || 0;
-
+      const pct  = parseInt((r[9] || "0").replace("%", "")) || 0;
+      const dist = parseFloat(r[6]) || 0;
+      const count= parseInt(r[5])   || 0;
       result.push({
-        name:  r[0].trim(),
-        nick:  r[2].trim(),
-        group: r[4].trim(),
-        count, dist, pct,
-        done:  r[10] ? r[10].trim() : "",
+        name: r[0].trim(), nick: r[2].trim(), group: r[4].trim(),
+        count, dist, pct, done: (r[10] || "").trim(),
       });
     }
-
     result.sort((a, b) => b.dist - a.dist);
     allRunners = result;
+
+    /* 학급별 집계 */
+    const classMap = {};
+    result.forEach(r => {
+      if (!isClass(r.group)) return;
+      if (!classMap[r.group]) classMap[r.group] = { total: 0, members: 0, active: 0 };
+      classMap[r.group].total  += r.dist;
+      classMap[r.group].members++;
+      if (r.count > 0) classMap[r.group].active++;
+    });
+    classRanks = Object.entries(classMap)
+      .map(([g, v]) => ({ group: g, total: v.total, members: v.members, active: v.active, avg: v.total / v.members }))
+      .sort((a, b) => b.total - a.total);
 
     const now = new Date();
     const updatedAt = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
@@ -164,46 +202,82 @@ async function init() {
   }
 }
 
-function renderPage(updatedAt) {
+function renderPage(date) {
   document.getElementById("app").innerHTML = `
     <div class="header">
       <div class="header-row">
         <h1>경곽 러닝 챌린지 현황</h1>
-        <span class="date-badge">${updatedAt} 기준</span>
+        <span class="date-badge">${date} 기준</span>
       </div>
       <div class="sub">학급달리기 &amp; 교직원 함께 달리기</div>
     </div>
+
     <div class="section">
       <div class="sec-head">
-        <span class="sec-title">러닝랩</span>
+        <span class="sec-title">학급 단체 순위</span>
+        <span class="tag tag-cls">Class</span>
+      </div>
+      <div class="class-grid" id="class-grid"></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-head">
+        <span class="sec-title">러닝랩 개인 순위</span>
         <span class="tag tag-lab">Lab</span>
       </div>
       <div class="hl hl-lab">🔥 손석영 샘의 독주에 대항마 출현! 이덕호 샘이 맹추격 중</div>
       <div class="runner-list" id="lab-list"></div>
     </div>
+
+    <hr class="divider">
+
     <div class="section">
       <div class="sec-head">
-        <span class="sec-title">교직원</span>
+        <span class="sec-title">교직원 개인 순위</span>
         <span class="tag tag-staff">Staff</span>
       </div>
       <div class="hl hl-staff">🏆 춘추전국시대 돌입 — 선두 경쟁이 치열합니다</div>
       <div class="runner-list" id="staff-list"></div>
     </div>
+
     <div class="section">
       <div class="sec-head">
-        <span class="sec-title">전체 순위</span>
-        <span class="tag tag-all">All</span>
+        <span class="sec-title">전체 개인 순위</span>
+        <span class="tag tag-cls">All</span>
         <button class="toggle-btn" id="toggle-btn" onclick="toggleFull()">전체 보기</button>
       </div>
       <div id="full-area"></div>
     </div>
+
     <div class="footer-msg">
       <strong>우리 각자의 삶의 속도를 응원합니다</strong><br>
       오늘 한 걸음도 충분히 빛납니다 ❤️
     </div>
   `;
+
+  renderClassGrid();
   renderSection("lab-list",   allRunners.filter(r => r.group === "러닝랩"), "#1D9E75");
   renderSection("staff-list", allRunners.filter(r => r.group === "교직원"), "#378ADD");
+}
+
+function renderClassGrid() {
+  const max = classRanks[0]?.total || 1;
+  const rc  = ["r1","r2","r3"];
+  const nc  = ["g","s","b"];
+  document.getElementById("class-grid").innerHTML = classRanks.map((c, i) => `
+    <div class="class-row ${rc[i] || ""}">
+      <div class="class-rank ${nc[i] || ""}">${i+1}</div>
+      <div class="class-name">${c.group}</div>
+      <div class="class-info">
+        <div class="class-members">참가 ${c.members}명 중 ${c.active}명 활동</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${(c.total/max*100).toFixed(1)}%"></div></div>
+      </div>
+      <div class="class-dist">
+        <span class="val">${c.total.toFixed(1)}</span><span class="unit">km</span>
+        <div class="avg">평균 ${c.avg.toFixed(1)}km</div>
+      </div>
+    </div>
+  `).join("");
 }
 
 function pctClass(p) { return p >= 100 ? "pct-done" : p > 0 ? "pct-mid" : "pct-low"; }
@@ -219,7 +293,7 @@ function runnerCard(r, i, color) {
     <div class="runner-info">
       <div class="runner-name">${r.name}</div>
       <div class="runner-nick">${r.nick}</div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="r-bar-wrap"><div class="r-bar-fill" style="width:${pct}%;background:${color}"></div></div>
     </div>
     <div class="runner-right">
       <span class="dist-val">${r.dist.toFixed(2)}</span><span class="dist-unit">km</span>
@@ -244,8 +318,8 @@ function renderFull() {
   if (!showFull) { area.innerHTML = ""; return; }
 
   const groups  = [...new Set(allRunners.map(r => r.group))].sort();
-  const allTabs = ["전체", "교직원", "러닝랩",
-    ...groups.filter(g => g !== "교직원" && g !== "러닝랩")];
+  const classTabs = groups.filter(g => isClass(g)).sort();
+  const allTabs = ["전체", "교직원", "러닝랩", ...classTabs];
 
   area.innerHTML = `
     <div class="tabs">${allTabs.map(t =>
@@ -269,10 +343,9 @@ function filterList() {
     if (q && !r.name.toLowerCase().includes(q) && !r.group.toLowerCase().includes(q)) return false;
     return true;
   });
-
   document.getElementById("cnt").textContent = `${filtered.length}명 표시`;
   const max   = allRunners[0]?.dist || 1;
-  const color = g => g === "러닝랩" ? "#1D9E75" : g === "교직원" ? "#378ADD" : "#888";
+  const color = g => isClass(g) ? "#7F77DD" : g === "러닝랩" ? "#1D9E75" : "#378ADD";
 
   document.getElementById("flist").innerHTML = filtered.map(r => {
     const gi = allRunners.findIndex(x => x.name === r.name && x.nick === r.nick);
