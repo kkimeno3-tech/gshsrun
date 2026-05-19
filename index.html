@@ -16,16 +16,12 @@
     --border: rgba(0,0,0,0.08);
     --text:   #1a1a1a;
     --muted:  #666;
-    --lab-bg:   #E1F5EE;
-    --lab-tx:   #085041;
-    --staff-bg: #E6F1FB;
-    --staff-tx: #0C447C;
-    --all-bg:   #EEEDFE;
-    --all-tx:   #3C3489;
+    --lab-bg:   #E1F5EE; --lab-tx:   #085041;
+    --staff-bg: #E6F1FB; --staff-tx: #0C447C;
+    --all-bg:   #EEEDFE; --all-tx:   #3C3489;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
-
   .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
   .header { margin-bottom: 1.75rem; }
@@ -42,7 +38,7 @@
   .tag-staff { background: var(--staff-bg); color: var(--staff-tx); }
   .tag-all   { background: var(--all-bg);   color: var(--all-tx); }
 
-  .hl { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+  .hl { padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
   .hl-lab   { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
   .hl-staff { background: var(--staff-bg); border: 1px solid #85B7EB; color: #042C53; }
 
@@ -69,7 +65,6 @@
   .pct-low  { background: #f0f0ee; color: var(--muted); }
 
   .toggle-btn { margin-left: auto; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
-  .toggle-btn:hover { background: var(--bg); }
   .search-wrap { margin-bottom: 10px; }
   .search-wrap input { width: 100%; padding: 8px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none; }
   .search-wrap input:focus { border-color: var(--teal); }
@@ -113,11 +108,29 @@ let allRunners = [];
 let showFull   = false;
 let activeTab  = "전체";
 
+/* JSONP — CORS 우회 */
+function fetchJSONP(url) {
+  return new Promise((resolve, reject) => {
+    const cb = "__gs_" + Date.now();
+    const script = document.createElement("script");
+    window[cb] = (data) => {
+      resolve(data);
+      delete window[cb];
+      document.head.removeChild(script);
+    };
+    script.onerror = () => {
+      reject(new Error("스크립트 로드 실패"));
+      delete window[cb];
+      document.head.removeChild(script);
+    };
+    script.src = url + "?callback=" + cb;
+    document.head.appendChild(script);
+  });
+}
+
 async function init() {
   try {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const json = await res.json();
+    const json = await fetchJSONP(API_URL);
     allRunners = json.runners || [];
     renderPage(json.updatedAt);
   } catch(e) {
