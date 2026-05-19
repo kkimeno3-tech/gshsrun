@@ -6,366 +6,303 @@
 <title>경곽 러닝 챌린지 현황</title>
 <style>
   :root {
-    --teal:   #1D9E75;
-    --blue:   #378ADD;
     --gold:   #B8860B;
     --silver: #708090;
     --bronze: #A0522D;
-    --bg:     #f8f8f6;
+    --bg:     #f4f3f0;
     --card:   #ffffff;
     --border: rgba(0,0,0,0.08);
     --text:   #1a1a1a;
-    --muted:  #666;
-    --lab-bg:   #E1F5EE; --lab-tx:   #085041;
-    --staff-bg: #E6F1FB; --staff-tx: #0C447C;
-    --cls-bg:   #EEEDFE; --cls-tx:   #3C3489;
+    --muted:  #777;
+    --purple: #7F77DD;
+    --teal:   #1D9E75;
+    --blue:   #378ADD;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
-  .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
-  /* 헤더 */
-  .header { margin-bottom: 1.75rem; }
-  .header-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
-  h1 { font-size: 20px; font-weight: 600; }
-  .date-badge { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: white; border: 1px solid var(--border); color: var(--muted); }
-  .sub { font-size: 13px; color: var(--muted); }
-
-  /* 섹션 */
-  .section { margin-bottom: 1.75rem; }
-  .sec-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .sec-title { font-size: 15px; font-weight: 600; }
-  .tag { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; }
-  .tag-cls   { background: var(--cls-bg);   color: var(--cls-tx); }
-  .tag-lab   { background: var(--lab-bg);   color: var(--lab-tx); }
-  .tag-staff { background: var(--staff-bg); color: var(--staff-tx); }
-
-  /* 학급 순위 카드 */
-  .class-grid { display: flex; flex-direction: column; gap: 6px; }
-  .class-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 16px; background: var(--card);
-    border: 1px solid var(--border); border-radius: 8px;
+  html, body {
+    height: 100%;
+    font-family: -apple-system, 'Malgun Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
   }
-  .class-row.r1 { border-left: 3px solid var(--gold);   border-radius: 0 8px 8px 0; }
-  .class-row.r2 { border-left: 3px solid var(--silver); border-radius: 0 8px 8px 0; }
-  .class-row.r3 { border-left: 3px solid var(--bronze); border-radius: 0 8px 8px 0; }
-  .class-rank { font-size: 13px; font-weight: 600; min-width: 22px; color: var(--muted); }
-  .class-rank.g { color: var(--gold); }
-  .class-rank.s { color: var(--silver); }
-  .class-rank.b { color: var(--bronze); }
-  .class-name { font-size: 15px; font-weight: 600; min-width: 58px; }
-  .class-info { flex: 1; }
-  .class-members { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .bar-wrap { background: #eee; border-radius: 3px; height: 5px; }
-  .bar-fill { height: 5px; border-radius: 3px; background: #7F77DD; }
-  .class-dist { text-align: right; flex-shrink: 0; }
-  .class-dist .val { font-size: 16px; font-weight: 600; }
-  .class-dist .unit { font-size: 11px; color: var(--muted); }
-  .class-dist .avg { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  /* 러너 카드 */
-  .runner-list { display: flex; flex-direction: column; gap: 6px; }
-  .runner-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
-  .runner-row.r1 { border-left: 3px solid var(--gold);   border-radius: 0 8px 8px 0; }
-  .runner-row.r2 { border-left: 3px solid var(--silver); border-radius: 0 8px 8px 0; }
-  .runner-row.r3 { border-left: 3px solid var(--bronze); border-radius: 0 8px 8px 0; }
-  .rank-num { font-size: 13px; font-weight: 600; min-width: 22px; color: var(--muted); }
-  .rank-num.g { color: var(--gold); }
-  .rank-num.s { color: var(--silver); }
-  .rank-num.b { color: var(--bronze); }
-  .runner-info { flex: 1; min-width: 0; }
-  .runner-name { font-size: 14px; font-weight: 600; }
-  .runner-nick { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .r-bar-wrap { margin-top: 5px; background: #eee; border-radius: 3px; height: 4px; }
-  .r-bar-fill { height: 4px; border-radius: 3px; }
-  .runner-right { text-align: right; flex-shrink: 0; }
-  .dist-val { font-size: 15px; font-weight: 600; }
-  .dist-unit { font-size: 11px; color: var(--muted); }
-  .pct-pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-top: 2px; }
+  /* 전체 레이아웃 */
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  /* 상단 헤더 바 */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .top-bar h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .top-bar .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .date-badge {
+    font-size: 13px; padding: 4px 14px; border-radius: 20px;
+    background: white; border: 1px solid var(--border); color: var(--muted);
+  }
+
+  /* 4분할 그리드 */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* 패널 */
+  .panel {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .panel-title { font-size: 15px; font-weight: 700; }
+  .tag {
+    font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600;
+  }
+  .tag-cls   { background: #EEEDFE; color: #3C3489; }
+  .tag-lab   { background: #E1F5EE; color: #085041; }
+  .tag-staff { background: #E6F1FB; color: #0C447C; }
+  .tag-stu   { background: #FAEEDA; color: #633806; }
+
+  /* 패널 내 스크롤 영역 */
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .panel-body::-webkit-scrollbar { width: 4px; }
+  .panel-body::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+  /* 학급 행 */
+  .cls-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  .cls-row.r1 { border-left: 3px solid var(--gold);   background: #fffdf5; }
+  .cls-row.r2 { border-left: 3px solid var(--silver); background: #fafafa; }
+  .cls-row.r3 { border-left: 3px solid var(--bronze); background: #fdf9f7; }
+  .cls-rank { font-size: 13px; font-weight: 700; min-width: 20px; color: var(--muted); }
+  .cls-rank.g { color: var(--gold); }
+  .cls-rank.s { color: var(--silver); }
+  .cls-rank.b { color: var(--bronze); }
+  .cls-name { font-size: 14px; font-weight: 700; min-width: 80px; }
+  .cls-info { flex: 1; min-width: 0; }
+  .cls-meta { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+  .bar-bg { height: 4px; background: #eee; border-radius: 3px; }
+  .bar-fill { height: 4px; border-radius: 3px; }
+  .cls-right { text-align: right; flex-shrink: 0; }
+  .cls-dist { font-size: 15px; font-weight: 700; }
+  .cls-unit { font-size: 11px; color: var(--muted); }
+  .cls-avg  { font-size: 11px; color: var(--muted); }
+
+  /* 러너 행 */
+  .run-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  .run-row.r1 { border-left: 3px solid var(--gold);   background: #fffdf5; }
+  .run-row.r2 { border-left: 3px solid var(--silver); background: #fafafa; }
+  .run-row.r3 { border-left: 3px solid var(--bronze); background: #fdf9f7; }
+  .run-rank { font-size: 13px; font-weight: 700; min-width: 20px; color: var(--muted); }
+  .run-rank.g { color: var(--gold); }
+  .run-rank.s { color: var(--silver); }
+  .run-rank.b { color: var(--bronze); }
+  .run-info { flex: 1; min-width: 0; }
+  .run-name { font-size: 14px; font-weight: 700; }
+  .run-nick { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .run-bar  { height: 3px; background: #eee; border-radius: 3px; margin-top: 4px; }
+  .run-bar-fill { height: 3px; border-radius: 3px; }
+  .run-right { text-align: right; flex-shrink: 0; }
+  .run-dist { font-size: 14px; font-weight: 700; }
+  .run-unit { font-size: 11px; color: var(--muted); }
+  .pct-pill { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 20px; margin-top: 2px; }
   .pct-done { background: #EAF3DE; color: #3B6D11; }
-  .pct-mid  { background: var(--staff-bg); color: #185FA5; }
+  .pct-mid  { background: #E6F1FB; color: #185FA5; }
   .pct-low  { background: #f0f0ee; color: var(--muted); }
 
-  /* 하이라이트 */
-  .hl { padding: 10px 14px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
-  .hl-lab   { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
-  .hl-staff { background: var(--staff-bg); border: 1px solid #85B7EB; color: #042C53; }
-
-  /* 전체 순위 */
-  .toggle-btn { margin-left: auto; font-size: 12px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
-  .search-wrap { margin-bottom: 10px; }
-  .search-wrap input { width: 100%; padding: 8px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none; }
-  .count-note { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  .full-list { display: flex; flex-direction: column; gap: 3px; }
-  .full-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 7px; border: 1px solid var(--border); background: white; font-size: 13px; }
-  .full-row:hover { background: var(--bg); }
-  .f-rank  { min-width: 22px; color: var(--muted); font-size: 12px; }
-  .f-name  { min-width: 75px; font-weight: 500; }
-  .f-group { min-width: 52px; font-size: 11px; color: var(--muted); }
-  .f-bar   { flex: 1; background: #eee; border-radius: 3px; height: 4px; }
-  .f-dist  { min-width: 58px; text-align: right; font-weight: 600; }
-  .f-pct   { min-width: 36px; text-align: right; font-size: 11px; color: var(--muted); }
-
-  .tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
-  .tab  { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
-  .tab.on { background: var(--text); color: white; border-color: var(--text); }
-
-  /* 구분선 */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0; }
-
-  .footer-msg { margin-top: 2rem; padding: 16px; border-radius: 10px; background: white; border: 1px solid var(--border); text-align: center; font-size: 14px; color: var(--muted); line-height: 1.9; }
-  .footer-msg strong { color: var(--text); }
-
-  .loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
-  .error   { text-align: center; padding: 2rem; color: #c0392b; font-size: 14px; line-height: 1.8; }
-
-  @media (max-width: 480px) {
-    .class-name { min-width: 46px; font-size: 14px; }
-    .dist-val   { font-size: 14px; }
-    .f-group    { display: none; }
+  /* 푸터 */
+  .footer {
+    text-align: center; font-size: 13px; color: var(--muted);
+    flex-shrink: 0; padding-bottom: 2px;
   }
+
+  .loading { text-align:center; padding:2rem; color:var(--muted); font-size:14px; }
+  .error   { text-align:center; padding:2rem; color:#c0392b; font-size:14px; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div id="app"><div class="loading">데이터 불러오는 중…</div></div>
+<div class="page">
+  <div class="top-bar">
+    <div>
+      <h1>경곽 러닝 챌린지 현황</h1>
+      <div class="sub">학급달리기 &amp; 교직원 함께 달리기</div>
+    </div>
+    <span class="date-badge" id="date-badge">불러오는 중…</span>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="panel"><div class="loading">데이터 불러오는 중…</div></div>
+    <div class="panel"></div>
+    <div class="panel"></div>
+    <div class="panel"></div>
+  </div>
+
+  <div class="footer">우리 각자의 삶의 속도를 응원합니다 ❤️</div>
 </div>
+
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSp1YvkLLSO2V3AD_13rH0hRWc7NUkMUhogxIimvvmrjy5kYNgk_3UtKCaTWO32S2bnqO4_W3vA6MO_/pub?output=csv";
 
-let allRunners  = [];
-let classRanks  = [];
-let showFull    = false;
-let activeTab   = "전체";
-
 function parseCSV(text) {
-  const lines = text.replace(/\r/g, "").split("\n");
-  return lines.map(line => {
-    const cols = []; let cur = "", inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === "," && !inQ) { cols.push(cur.trim()); cur = ""; }
-      else { cur += ch; }
+  return text.replace(/\r/g,"").split("\n").map(line => {
+    const cols=[]; let cur="", inQ=false;
+    for(const ch of line){
+      if(ch==='"'){inQ=!inQ;}
+      else if(ch===","&&!inQ){cols.push(cur.trim());cur="";}
+      else{cur+=ch;}
     }
     cols.push(cur.trim());
     return cols;
   });
 }
 
-function isClass(group) {
-  return /^\d{2}-\d{2}$/.test(group);
+function isClass(g){ return /^\d{2}-\d{2}$/.test(g); }
+function labelGroup(g){
+  const m=g.match(/^(\d{2})-(\d{2})$/);
+  return m ? parseInt(m[1])+"학년 "+parseInt(m[2])+"반" : g;
+}
+function pctClass(p){ return p>=100?"pct-done":p>0?"pct-mid":"pct-low"; }
+function pctLabel(p){ return p>=100?"완료 ✓":p>0?p+"%":"미시작"; }
+const RC=["r1","r2","r3"], NC=["g","s","b"];
+
+function clsRow(c, i, maxTotal){
+  const w=(c.total/maxTotal*100).toFixed(1);
+  return `<div class="cls-row ${RC[i]||""}">
+    <div class="cls-rank ${NC[i]||""}">${i+1}</div>
+    <div class="cls-name">${labelGroup(c.group)}</div>
+    <div class="cls-info">
+      <div class="cls-meta">${c.active}/${c.members}명 활동</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${w}%;background:var(--purple)"></div></div>
+    </div>
+    <div class="cls-right">
+      <span class="cls-dist">${c.total.toFixed(1)}</span><span class="cls-unit">km</span>
+      <div class="cls-avg">평균 ${c.avg.toFixed(1)}km</div>
+    </div>
+  </div>`;
 }
 
-function labelGroup(group) {
-  const m = group.match(/^(\d{2})-(\d{2})$/);
-  if (!m) return group;
-  return parseInt(m[1]) + "학년 " + parseInt(m[2]) + "반";
-}
-
-async function init() {
-  try {
-    const res  = await fetch(CSV_URL);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    const rows = parseCSV(text);
-
-    const result = [];
-    for (let i = 1; i < rows.length; i++) {
-      const r = rows[i];
-      if (!r[0] || r[0] === "") continue;
-      const pct  = parseInt((r[9] || "0").replace("%", "")) || 0;
-      const dist = parseFloat(r[6]) || 0;
-      const count= parseInt(r[5])   || 0;
-      result.push({
-        name: r[0].trim(), nick: r[2].trim(), group: r[4].trim(),
-        count, dist, pct, done: (r[10] || "").trim(),
-      });
-    }
-    result.sort((a, b) => b.dist - a.dist);
-    allRunners = result;
-
-    /* 학급별 집계 */
-    const classMap = {};
-    result.forEach(r => {
-      if (!isClass(r.group)) return;
-      if (!classMap[r.group]) classMap[r.group] = { total: 0, members: 0, active: 0 };
-      classMap[r.group].total  += r.dist;
-      classMap[r.group].members++;
-      if (r.count > 0) classMap[r.group].active++;
-    });
-    classRanks = Object.entries(classMap)
-      .map(([g, v]) => ({ group: g, total: v.total, members: v.members, active: v.active, avg: v.total / v.members }))
-      .sort((a, b) => b.total - a.total);
-
-    const now = new Date();
-    const updatedAt = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
-    renderPage(updatedAt);
-  } catch(e) {
-    document.getElementById("app").innerHTML =
-      `<div class="error">데이터를 불러오지 못했습니다.<br><small>${e.message}</small></div>`;
-  }
-}
-
-function renderPage(date) {
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="header-row">
-        <h1>경곽 러닝 챌린지 현황</h1>
-        <span class="date-badge">${date} 기준</span>
-      </div>
-      <div class="sub">학급달리기 &amp; 교직원 함께 달리기</div>
+function runRow(r, i, maxDist, color){
+  const pct=Math.min(r.pct,100);
+  const w=(r.dist/maxDist*100).toFixed(1);
+  return `<div class="run-row ${RC[i]||""}">
+    <div class="run-rank ${NC[i]||""}">${i+1}</div>
+    <div class="run-info">
+      <div class="run-name">${r.name}</div>
+      <div class="run-nick">${r.nick}</div>
+      <div class="run-bar"><div class="run-bar-fill" style="width:${w}%;background:${color}"></div></div>
     </div>
-
-    <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">학급 단체 순위</span>
-        <span class="tag tag-cls">Class</span>
-      </div>
-      <div class="class-grid" id="class-grid"></div>
-    </div>
-
-    <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">러닝랩 개인 순위</span>
-        <span class="tag tag-lab">Lab</span>
-      </div>
-      <div class="hl hl-lab">🏃 러닝랩 멤버들의 열정적인 달리기가 이어지고 있습니다</div>
-      <div class="runner-list" id="lab-list"></div>
-    </div>
-
-    <hr class="divider">
-
-    <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">교직원 개인 순위</span>
-        <span class="tag tag-staff">Staff</span>
-      </div>
-      <div class="hl hl-staff">🏆 춘추전국시대 돌입 — 선두 경쟁이 치열합니다</div>
-      <div class="runner-list" id="staff-list"></div>
-    </div>
-
-    <div class="section">
-      <div class="sec-head">
-        <span class="sec-title">전체 개인 순위</span>
-        <span class="tag tag-cls">All</span>
-        <button class="toggle-btn" id="toggle-btn" onclick="toggleFull()">전체 보기</button>
-      </div>
-      <div id="full-area"></div>
-    </div>
-
-    <div class="footer-msg">
-      <strong>우리 각자의 삶의 속도를 응원합니다</strong><br>
-      오늘 한 걸음도 충분히 빛납니다 ❤️
-    </div>
-  `;
-
-  renderClassGrid();
-  renderSection("lab-list",   allRunners.filter(r => r.group === "러닝랩"), "#1D9E75");
-  renderSection("staff-list", allRunners.filter(r => r.group === "교직원"), "#378ADD");
-}
-
-function renderClassGrid() {
-  const max = classRanks[0]?.total || 1;
-  const rc  = ["r1","r2","r3"];
-  const nc  = ["g","s","b"];
-  document.getElementById("class-grid").innerHTML = classRanks.map((c, i) => `
-    <div class="class-row ${rc[i] || ""}">
-      <div class="class-rank ${nc[i] || ""}">${i+1}</div>
-      <div class="class-name">${labelGroup(c.group)}</div>
-      <div class="class-info">
-        <div class="class-members">참가 ${c.members}명 중 ${c.active}명 활동</div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${(c.total/max*100).toFixed(1)}%"></div></div>
-      </div>
-      <div class="class-dist">
-        <span class="val">${c.total.toFixed(1)}</span><span class="unit">km</span>
-        <div class="avg">평균 ${c.avg.toFixed(1)}km</div>
-      </div>
-    </div>
-  `).join("");
-}
-
-function pctClass(p) { return p >= 100 ? "pct-done" : p > 0 ? "pct-mid" : "pct-low"; }
-function pctLabel(p) { return p >= 100 ? "완료 ✓"  : p > 0 ? p + "%" : "미시작"; }
-
-function runnerCard(r, i, color) {
-  const pct = Math.min(r.pct, 100);
-  const rc  = ["r1","r2","r3"][i] || "";
-  const nc  = ["g","s","b"][i]   || "";
-  return `
-  <div class="runner-row ${rc}">
-    <div class="rank-num ${nc}">${i+1}</div>
-    <div class="runner-info">
-      <div class="runner-name">${r.name}</div>
-      <div class="runner-nick">${r.nick}</div>
-      <div class="r-bar-wrap"><div class="r-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-    </div>
-    <div class="runner-right">
-      <span class="dist-val">${r.dist.toFixed(2)}</span><span class="dist-unit">km</span>
+    <div class="run-right">
+      <span class="run-dist">${r.dist.toFixed(2)}</span><span class="run-unit">km</span>
       <br><span class="pct-pill ${pctClass(r.pct)}">${pctLabel(r.pct)}</span>
     </div>
   </div>`;
 }
 
-function renderSection(id, list, color) {
-  document.getElementById(id).innerHTML =
-    list.slice(0, 5).map((r, i) => runnerCard(r, i, color)).join("");
-}
-
-function toggleFull() {
-  showFull = !showFull;
-  document.getElementById("toggle-btn").textContent = showFull ? "접기" : "전체 보기";
-  renderFull();
-}
-
-function renderFull() {
-  const area = document.getElementById("full-area");
-  if (!showFull) { area.innerHTML = ""; return; }
-
-  const groups  = [...new Set(allRunners.map(r => r.group))].sort();
-  const classTabs = groups.filter(g => isClass(g)).sort();
-  const allTabs = ["전체", "교직원", "러닝랩", ...classTabs];
-
-  area.innerHTML = `
-    <div class="tabs">${allTabs.map(t =>
-      `<button class="tab ${t === activeTab ? "on" : ""}" onclick="setTab('${t}')">${labelGroup(t)}</button>`
-    ).join("")}</div>
-    <div class="search-wrap">
-      <input type="text" id="search" placeholder="이름 또는 소속 검색…" oninput="filterList()">
+function panel(title, tagClass, tagLabel, bodyHTML){
+  return `<div class="panel">
+    <div class="panel-head">
+      <span class="panel-title">${title}</span>
+      <span class="tag ${tagClass}">${tagLabel}</span>
     </div>
-    <div class="count-note" id="cnt"></div>
-    <div class="full-list" id="flist"></div>
-  `;
-  filterList();
+    <div class="panel-body">${bodyHTML}</div>
+  </div>`;
 }
 
-function setTab(t) { activeTab = t; renderFull(); }
+async function init(){
+  try {
+    const res = await fetch(CSV_URL);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const rows = parseCSV(await res.text());
 
-function filterList() {
-  const q = (document.getElementById("search")?.value || "").toLowerCase();
-  const filtered = allRunners.filter(r => {
-    if (activeTab !== "전체" && r.group !== activeTab) return false;
-    if (q && !r.name.toLowerCase().includes(q) && !r.group.toLowerCase().includes(q)) return false;
-    return true;
-  });
-  document.getElementById("cnt").textContent = `${filtered.length}명 표시`;
-  const max   = allRunners[0]?.dist || 1;
-  const color = g => isClass(g) ? "#7F77DD" : g === "러닝랩" ? "#1D9E75" : "#378ADD";
+    const all=[];
+    for(let i=1;i<rows.length;i++){
+      const r=rows[i];
+      if(!r[0]||r[0]==="") continue;
+      const pct=parseInt((r[9]||"0").replace("%",""))||0;
+      const dist=parseFloat(r[6])||0;
+      const count=parseInt(r[5])||0;
+      all.push({name:r[0].trim(),nick:r[2].trim(),group:r[4].trim(),count,dist,pct});
+    }
+    all.sort((a,b)=>b.dist-a.dist);
 
-  document.getElementById("flist").innerHTML = filtered.map(r => {
-    const gi = allRunners.findIndex(x => x.name === r.name && x.nick === r.nick);
-    const w  = ((r.dist / max) * 100).toFixed(1);
-    return `
-    <div class="full-row">
-      <span class="f-rank">${gi + 1}</span>
-      <span class="f-name">${r.name}</span>
-      <span class="f-group">${labelGroup(r.group)}</span>
-      <div class="f-bar"><div style="height:4px;border-radius:3px;background:${color(r.group)};width:${w}%"></div></div>
-      <span class="f-dist">${r.dist.toFixed(1)}km</span>
-      <span class="f-pct">${r.pct}%</span>
-    </div>`;
-  }).join("");
+    /* 학급 집계 */
+    const cm={};
+    all.forEach(r=>{
+      if(!isClass(r.group)) return;
+      if(!cm[r.group]) cm[r.group]={total:0,members:0,active:0};
+      cm[r.group].total+=r.dist;
+      cm[r.group].members++;
+      if(r.count>0) cm[r.group].active++;
+    });
+    const clsRanks=Object.entries(cm)
+      .map(([g,v])=>({group:g,...v,avg:v.total/v.members}))
+      .sort((a,b)=>b.total-a.total);
+
+    const maxCls  = clsRanks[0]?.total||1;
+    const labList = all.filter(r=>r.group==="러닝랩");
+    const stfList = all.filter(r=>r.group==="교직원");
+    const stuList = all.filter(r=>isClass(r.group));
+    const maxLab  = labList[0]?.dist||1;
+    const maxStf  = stfList[0]?.dist||1;
+    const maxStu  = stuList[0]?.dist||1;
+
+    const now=new Date();
+    document.getElementById("date-badge").textContent=
+      `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")} 기준`;
+
+    document.getElementById("grid").innerHTML =
+      panel("학급 단체 순위","tag-cls","Class",
+        clsRanks.map((c,i)=>clsRow(c,i,maxCls)).join("")) +
+      panel("러닝랩 개인 순위","tag-lab","Lab",
+        labList.map((r,i)=>runRow(r,i,maxLab,"#1D9E75")).join("")) +
+      panel("학생 개인 순위","tag-stu","Student",
+        stuList.map((r,i)=>runRow(r,i,maxStu,"#7F77DD")).join("")) +
+      panel("교직원 개인 순위","tag-staff","Staff",
+        stfList.map((r,i)=>runRow(r,i,maxStf,"#378ADD")).join(""));
+
+  } catch(e){
+    document.getElementById("grid").innerHTML=
+      `<div class="error">데이터 오류: ${e.message}</div>`;
+  }
 }
 
 init();
