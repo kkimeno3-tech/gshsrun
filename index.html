@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경곽 러닝 챌린지 현황</title>
+<style>
+  :root {
+    --teal:   #1D9E75;
+    --blue:   #378ADD;
+    --gold:   #B8860B;
+    --silver: #708090;
+    --bronze: #A0522D;
+    --bg:     #f8f8f6;
+    --card:   #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text:   #1a1a1a;
+    --muted:  #666;
+    --lab-bg:   #E1F5EE;
+    --lab-tx:   #085041;
+    --staff-bg: #E6F1FB;
+    --staff-tx: #0C447C;
+    --all-bg:   #EEEDFE;
+    --all-tx:   #3C3489;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  /* 헤더 */
+  .header { margin-bottom: 1.75rem; }
+  .header-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  h1 { font-size: 20px; font-weight: 600; }
+  .date-badge { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: white; border: 1px solid var(--border); color: var(--muted); }
+  .sub { font-size: 13px; color: var(--muted); }
+
+  /* 섹션 */
+  .section { margin-bottom: 1.75rem; }
+  .sec-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .sec-title { font-size: 15px; font-weight: 600; }
+  .tag { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; }
+  .tag-lab   { background: var(--lab-bg);   color: var(--lab-tx); }
+  .tag-staff { background: var(--staff-bg); color: var(--staff-tx); }
+  .tag-all   { background: var(--all-bg);   color: var(--all-tx); }
+
+  /* 하이라이트 박스 */
+  .hl { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px;
+        border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+  .hl-lab   { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
+  .hl-staff { background: var(--staff-bg); border: 1px solid #85B7EB; color: #042C53; }
+
+  /* 러너 카드 */
+  .runner-list { display: flex; flex-direction: column; gap: 6px; }
+  .runner-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .runner-row.r1 { border-left: 3px solid var(--gold);   border-radius: 0 8px 8px 0; }
+  .runner-row.r2 { border-left: 3px solid var(--silver); border-radius: 0 8px 8px 0; }
+  .runner-row.r3 { border-left: 3px solid var(--bronze); border-radius: 0 8px 8px 0; }
+  .rank-num { font-size: 13px; font-weight: 600; min-width: 22px; color: var(--muted); }
+  .rank-num.g { color: var(--gold); }
+  .rank-num.s { color: var(--silver); }
+  .rank-num.b { color: var(--bronze); }
+  .runner-info { flex: 1; min-width: 0; }
+  .runner-name { font-size: 14px; font-weight: 600; }
+  .runner-nick { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-wrap { margin-top: 5px; background: #eee; border-radius: 3px; height: 4px; }
+  .bar-fill { height: 4px; border-radius: 3px; }
+  .runner-right { text-align: right; flex-shrink: 0; }
+  .dist-val { font-size: 15px; font-weight: 600; }
+  .dist-unit { font-size: 11px; color: var(--muted); }
+  .pct-pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-top: 2px; }
+  .pct-done { background: #EAF3DE; color: #3B6D11; }
+  .pct-mid  { background: var(--staff-bg); color: #185FA5; }
+  .pct-low  { background: #f0f0ee; color: var(--muted); }
+
+  /* 전체 순위 */
+  .toggle-btn { margin-left: auto; font-size: 12px; padding: 4px 12px; border-radius: 6px;
+                border: 1px solid var(--border); background: white; cursor: pointer; color: var(--muted); }
+  .toggle-btn:hover { background: var(--bg); }
+  .search-wrap { margin-bottom: 10px; }
+  .search-wrap input {
+    width: 100%; padding: 8px 12px; font-size: 13px; border: 1px solid var(--border);
+    border-radius: 8px; background: white; outline: none;
+  }
+  .search-wrap input:focus { border-color: var(--teal); }
+  .count-note { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .full-list { display: flex; flex-direction: column; gap: 3px; }
+  .full-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 7px;
+    border: 1px solid var(--border); background: white;
+    font-size: 13px;
+  }
+  .full-row:hover { background: var(--bg); }
+  .f-rank  { min-width: 22px; color: var(--muted); font-size: 12px; }
+  .f-name  { min-width: 75px; font-weight: 500; }
+  .f-group { min-width: 48px; font-size: 11px; color: var(--muted); }
+  .f-bar   { flex: 1; background: #eee; border-radius: 3px; height: 4px; }
+  .f-dist  { min-width: 58px; text-align: right; font-weight: 600; }
+  .f-pct   { min-width: 36px; text-align: right; font-size: 11px; color: var(--muted); }
+
+  /* 탭 */
+  .tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tab  { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border);
+          background: white; cursor: pointer; color: var(--muted); }
+  .tab.on { background: var(--text); color: white; border-color: var(--text); }
+
+  /* 푸터 메시지 */
+  .footer-msg {
+    margin-top: 2rem; padding: 16px; border-radius: 10px;
+    background: white; border: 1px solid var(--border);
+    text-align: center; font-size: 14px; color: var(--muted); line-height: 1.9;
+  }
+  .footer-msg strong { color: var(--text); }
+
+  /* 로딩/에러 */
+  .loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
+  .error   { text-align: center; padding: 2rem; color: #c0392b; font-size: 14px; }
+
+  /* 모바일 */
+  @media (max-width: 480px) {
+    .runner-name { font-size: 13px; }
+    .dist-val    { font-size: 14px; }
+    .f-group     { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="app"><div class="loading">데이터 불러오는 중…</div></div>
+
+</div>
+
+<script>
+// ★ Apps Script 웹앱 배포 후 아래 URL로 교체하세요
+const API_URL = "https://script.google.com/macros/s/AKfycbx3QJ-0XAnAJJON04Jg-Xk8-1lR5hA1wLqzO3zSGMHL_cmn0kxp0c8GSTJxPwIAswVpvA/exec";
+
+let allRunners = [];
+let showFull   = false;
+let activeTab  = "전체";
+
+async function init() {
+  try {
+    const res  = await fetch(API_URL);
+    const json = await res.json();
+    allRunners = json.runners || [];
+    renderPage(json.updatedAt);
+  } catch(e) {
+    document.getElementById("app").innerHTML =
+      `<div class="error">데이터를 불러오지 못했습니다.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function renderPage(updatedAt) {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-row">
+        <h1>경곽 러닝 챌린지 현황</h1>
+        <span class="date-badge" id="date-badge">${updatedAt || ""} 기준</span>
+      </div>
+      <div class="sub">학급달리기 &amp; 교직원 함께 달리기</div>
+    </div>
+
+    <div class="section">
+      <div class="sec-head">
+        <span class="sec-title">러닝랩</span>
+        <span class="tag tag-lab">Lab</span>
+      </div>
+      <div class="hl hl-lab">🔥 손석영 샘의 독주에 대항마 출현! 이덕호 샘이 맹추격 중</div>
+      <div class="runner-list" id="lab-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-head">
+        <span class="sec-title">교직원</span>
+        <span class="tag tag-staff">Staff</span>
+      </div>
+      <div class="hl hl-staff">🏆 춘추전국시대 돌입 — 선두 경쟁이 치열합니다</div>
+      <div class="runner-list" id="staff-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-head">
+        <span class="sec-title">전체 순위</span>
+        <span class="tag tag-all">All</span>
+        <button class="toggle-btn" id="toggle-btn" onclick="toggleFull()">전체 보기</button>
+      </div>
+      <div id="full-area"></div>
+    </div>
+
+    <div class="footer-msg">
+      <strong>우리 각자의 삶의 속도를 응원합니다</strong><br>
+      오늘 한 걸음도 충분히 빛납니다 ❤️
+    </div>
+  `;
+
+  renderLab();
+  renderStaff();
+}
+
+function pctClass(p)  { return p >= 100 ? "pct-done" : p > 0 ? "pct-mid" : "pct-low"; }
+function pctLabel(p)  { return p >= 100 ? "완료 ✓"  : p > 0 ? p + "%" : "미시작"; }
+function rcClass(i)   { return ["r1","r2","r3"][i] || ""; }
+function rnClass(i)   { return ["g","s","b"][i]   || ""; }
+
+function runnerCard(r, i, barColor) {
+  const pct = Math.min(r.pct, 100);
+  return `
+  <div class="runner-row ${rcClass(i)}">
+    <div class="rank-num ${rnClass(i)}">${i+1}</div>
+    <div class="runner-info">
+      <div class="runner-name">${r.name}</div>
+      <div class="runner-nick">${r.nick}</div>
+      <div class="bar-wrap">
+        <div class="bar-fill" style="width:${pct}%;background:${barColor}"></div>
+      </div>
+    </div>
+    <div class="runner-right">
+      <span class="dist-val">${r.dist.toFixed(2)}</span><span class="dist-unit">km</span>
+      <br><span class="pct-pill ${pctClass(r.pct)}">${pctLabel(r.pct)}</span>
+    </div>
+  </div>`;
+}
+
+function renderLab() {
+  const list = allRunners.filter(r => r.group === "러닝랩");
+  document.getElementById("lab-list").innerHTML =
+    list.slice(0, 5).map((r, i) => runnerCard(r, i, "#1D9E75")).join("");
+}
+
+function renderStaff() {
+  const list = allRunners.filter(r => r.group === "교직원");
+  document.getElementById("staff-list").innerHTML =
+    list.slice(0, 5).map((r, i) => runnerCard(r, i, "#378ADD")).join("");
+}
+
+function toggleFull() {
+  showFull = !showFull;
+  document.getElementById("toggle-btn").textContent = showFull ? "접기" : "전체 보기";
+  renderFull();
+}
+
+const TABS = ["전체", "교직원", "러닝랩"];
+
+function renderFull() {
+  const area = document.getElementById("full-area");
+  if (!showFull) { area.innerHTML = ""; return; }
+
+  const groups = [...new Set(allRunners.map(r => r.group))].sort();
+  const allTabs = ["전체", "교직원", "러닝랩",
+    ...groups.filter(g => g !== "교직원" && g !== "러닝랩")];
+
+  area.innerHTML = `
+    <div class="tabs">${allTabs.map(t =>
+      `<button class="tab ${t === activeTab ? "on" : ""}"
+        onclick="setTab('${t}')">${t}</button>`).join("")}
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="이름 또는 소속 검색…" oninput="filterList()">
+    </div>
+    <div class="count-note" id="cnt"></div>
+    <div class="full-list" id="flist"></div>
+  `;
+
+  filterList();
+}
+
+function setTab(t) {
+  activeTab = t;
+  renderFull();
+}
+
+function filterList() {
+  const q = (document.getElementById("search")?.value || "").toLowerCase();
+  const filtered = allRunners.filter(r => {
+    if (activeTab !== "전체" && r.group !== activeTab) return false;
+    if (q && !r.name.toLowerCase().includes(q) && !r.group.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById("cnt").textContent = `${filtered.length}명 표시`;
+  const max = allRunners[0]?.dist || 1;
+  const barColors = { "러닝랩": "#1D9E75", "교직원": "#378ADD" };
+  const color = (g) => barColors[g] || "#888";
+
+  document.getElementById("flist").innerHTML = filtered.map((r) => {
+    const gi = allRunners.findIndex(x => x.name === r.name && x.nick === r.nick);
+    const w  = ((r.dist / max) * 100).toFixed(1);
+    return `
+    <div class="full-row">
+      <span class="f-rank">${gi + 1}</span>
+      <span class="f-name">${r.name}</span>
+      <span class="f-group">${r.group}</span>
+      <div class="f-bar">
+        <div style="height:4px;border-radius:3px;background:${color(r.group)};width:${w}%"></div>
+      </div>
+      <span class="f-dist">${r.dist.toFixed(1)}km</span>
+      <span class="f-pct">${r.pct}%</span>
+    </div>`;
+  }).join("");
+}
+
+init();
+</script>
+</body>
+</html>
