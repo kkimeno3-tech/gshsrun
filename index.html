@@ -88,7 +88,6 @@
 
   .loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
   .error   { text-align: center; padding: 2rem; color: #c0392b; font-size: 14px; line-height: 1.8; }
-
   @media (max-width: 480px) {
     .runner-name { font-size: 13px; }
     .dist-val    { font-size: 14px; }
@@ -100,39 +99,65 @@
 <div class="container">
   <div id="app"><div class="loading">데이터 불러오는 중…</div></div>
 </div>
-
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbx3QJ-0XAnAJJON04Jg-Xk8-1lR5hA1wLqzO3zSGMHL_cmn0kxp0c8GSTJxPwIAswVpvA/exec";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSp1YvkLLSO2V3AD_13rH0hRWc7NUkMUhogxIimvvmrjy5kYNgk_3UtKCaTWO32S2bnqO4_W3vA6MO_/pub?output=csv";
 
 let allRunners = [];
 let showFull   = false;
 let activeTab  = "전체";
 
-/* JSONP — CORS 우회 */
-function fetchJSONP(url) {
-  return new Promise((resolve, reject) => {
-    const cb = "__gs_" + Date.now();
-    const script = document.createElement("script");
-    window[cb] = (data) => {
-      resolve(data);
-      delete window[cb];
-      document.head.removeChild(script);
-    };
-    script.onerror = () => {
-      reject(new Error("스크립트 로드 실패"));
-      delete window[cb];
-      document.head.removeChild(script);
-    };
-    script.src = url + "?callback=" + cb;
-    document.head.appendChild(script);
+/* CSV 파싱 (따옴표 포함 처리) */
+function parseCSV(text) {
+  const lines = text.replace(/\r/g, "").split("\n");
+  return lines.map(line => {
+    const cols = [];
+    let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === "," && !inQ) { cols.push(cur.trim()); cur = ""; }
+      else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    return cols;
   });
 }
 
 async function init() {
   try {
-    const json = await fetchJSONP(API_URL);
-    allRunners = json.runners || [];
-    renderPage(json.updatedAt);
+    const res = await fetch(CSV_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    // 헤더 행 건너뛰고 데이터 파싱
+    // 컬럼: 이름(0) 유저코드(1) 닉네임(2) 휴대폰(3) 소속(4) 운동횟수(5)
+    //        누적거리(6) 시간(7) 걸음(8) 달성률(9) 완료일(10)
+    const result = [];
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i];
+      if (!r[0] || r[0] === "") continue;
+
+      const pctRaw = r[9] ? r[9].replace("%", "").trim() : "0";
+      const pct    = parseInt(pctRaw) || 0;
+      const dist   = parseFloat(r[6]) || 0;
+      const count  = parseInt(r[5])   || 0;
+
+      result.push({
+        name:  r[0].trim(),
+        nick:  r[2].trim(),
+        group: r[4].trim(),
+        count, dist, pct,
+        done:  r[10] ? r[10].trim() : "",
+      });
+    }
+
+    result.sort((a, b) => b.dist - a.dist);
+    allRunners = result;
+
+    const now = new Date();
+    const updatedAt = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
+    renderPage(updatedAt);
   } catch(e) {
     document.getElementById("app").innerHTML =
       `<div class="error">데이터를 불러오지 못했습니다.<br><small>${e.message}</small></div>`;
@@ -144,11 +169,10 @@ function renderPage(updatedAt) {
     <div class="header">
       <div class="header-row">
         <h1>경곽 러닝 챌린지 현황</h1>
-        <span class="date-badge">${updatedAt || ""} 기준</span>
+        <span class="date-badge">${updatedAt} 기준</span>
       </div>
       <div class="sub">학급달리기 &amp; 교직원 함께 달리기</div>
     </div>
-
     <div class="section">
       <div class="sec-head">
         <span class="sec-title">러닝랩</span>
@@ -157,7 +181,6 @@ function renderPage(updatedAt) {
       <div class="hl hl-lab">🔥 손석영 샘의 독주에 대항마 출현! 이덕호 샘이 맹추격 중</div>
       <div class="runner-list" id="lab-list"></div>
     </div>
-
     <div class="section">
       <div class="sec-head">
         <span class="sec-title">교직원</span>
@@ -166,7 +189,6 @@ function renderPage(updatedAt) {
       <div class="hl hl-staff">🏆 춘추전국시대 돌입 — 선두 경쟁이 치열합니다</div>
       <div class="runner-list" id="staff-list"></div>
     </div>
-
     <div class="section">
       <div class="sec-head">
         <span class="sec-title">전체 순위</span>
@@ -175,13 +197,11 @@ function renderPage(updatedAt) {
       </div>
       <div id="full-area"></div>
     </div>
-
     <div class="footer-msg">
       <strong>우리 각자의 삶의 속도를 응원합니다</strong><br>
       오늘 한 걸음도 충분히 빛납니다 ❤️
     </div>
   `;
-
   renderSection("lab-list",   allRunners.filter(r => r.group === "러닝랩"), "#1D9E75");
   renderSection("staff-list", allRunners.filter(r => r.group === "교직원"), "#378ADD");
 }
@@ -223,7 +243,7 @@ function renderFull() {
   const area = document.getElementById("full-area");
   if (!showFull) { area.innerHTML = ""; return; }
 
-  const groups = [...new Set(allRunners.map(r => r.group))].sort();
+  const groups  = [...new Set(allRunners.map(r => r.group))].sort();
   const allTabs = ["전체", "교직원", "러닝랩",
     ...groups.filter(g => g !== "교직원" && g !== "러닝랩")];
 
@@ -251,7 +271,7 @@ function filterList() {
   });
 
   document.getElementById("cnt").textContent = `${filtered.length}명 표시`;
-  const max = allRunners[0]?.dist || 1;
+  const max   = allRunners[0]?.dist || 1;
   const color = g => g === "러닝랩" ? "#1D9E75" : g === "교직원" ? "#378ADD" : "#888";
 
   document.getElementById("flist").innerHTML = filtered.map(r => {
