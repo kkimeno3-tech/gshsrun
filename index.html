@@ -158,6 +158,12 @@ function isClass(group) {
   return /^\d{2}-\d{2}$/.test(group);
 }
 
+function labelGroup(group) {
+  const m = group.match(/^(\d{2})-(\d{2})$/);
+  if (!m) return group;
+  return parseInt(m[1]) + "학년 " + parseInt(m[2]) + "반";
+}
+
 async function init() {
   try {
     const res  = await fetch(CSV_URL);
@@ -225,7 +231,7 @@ function renderPage(date) {
         <span class="sec-title">러닝랩 개인 순위</span>
         <span class="tag tag-lab">Lab</span>
       </div>
-      <div class="hl hl-lab">🔥 손석영 샘의 독주에 대항마 출현! 이덕호 샘이 맹추격 중</div>
+      <div class="hl hl-lab">🏃 러닝랩 멤버들의 열정적인 달리기가 이어지고 있습니다</div>
       <div class="runner-list" id="lab-list"></div>
     </div>
 
@@ -267,7 +273,7 @@ function renderClassGrid() {
   document.getElementById("class-grid").innerHTML = classRanks.map((c, i) => `
     <div class="class-row ${rc[i] || ""}">
       <div class="class-rank ${nc[i] || ""}">${i+1}</div>
-      <div class="class-name">${c.group}</div>
+      <div class="class-name">${labelGroup(c.group)}</div>
       <div class="class-info">
         <div class="class-members">참가 ${c.members}명 중 ${c.active}명 활동</div>
         <div class="bar-wrap"><div class="bar-fill" style="width:${(c.total/max*100).toFixed(1)}%"></div></div>
@@ -323,7 +329,7 @@ function renderFull() {
 
   area.innerHTML = `
     <div class="tabs">${allTabs.map(t =>
-      `<button class="tab ${t === activeTab ? "on" : ""}" onclick="setTab('${t}')">${t}</button>`
+      `<button class="tab ${t === activeTab ? "on" : ""}" onclick="setTab('${t}')">${labelGroup(t)}</button>`
     ).join("")}</div>
     <div class="search-wrap">
       <input type="text" id="search" placeholder="이름 또는 소속 검색…" oninput="filterList()">
@@ -354,7 +360,7 @@ function filterList() {
     <div class="full-row">
       <span class="f-rank">${gi + 1}</span>
       <span class="f-name">${r.name}</span>
-      <span class="f-group">${r.group}</span>
+      <span class="f-group">${labelGroup(r.group)}</span>
       <div class="f-bar"><div style="height:4px;border-radius:3px;background:${color(r.group)};width:${w}%"></div></div>
       <span class="f-dist">${r.dist.toFixed(1)}km</span>
       <span class="f-pct">${r.pct}%</span>
